@@ -1,0 +1,24 @@
+cmake_minimum_required(VERSION 3.29)
+project(powermode-indicator)
+
+enable_language(CXX)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
+
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(GTK REQUIRED IMPORTED_TARGET gtkmm-3.0 glibmm-2.4 giomm-2.4)
+pkg_check_modules(APP_INDICATOR REQUIRED IMPORTED_TARGET appindicator3-0.1)
+
+add_executable(powermode-indicator main.cpp app_menu.cpp)
+
+target_link_libraries(powermode-indicator ${GTK_LIBRARIES}
+                      ${APP_INDICATOR_LIBRARIES})
+
+target_compile_options(
+  powermode-indicator PRIVATE ${GTK_CFLAGS_OTHER} ${APP_INDICATOR_CFLAGS_OTHER})
+
+target_include_directories(
+  powermode-indicator PRIVATE ${GTK_INCLUDE_DIRS} ${APP_INDICATOR_INCLUDE_DIRS})
+
+target_link_directories(powermode-indicator PRIVATE ${GTK_LIBRARY_DIRS}
+                        ${APP_INDICATOR_LIBRARIES})
