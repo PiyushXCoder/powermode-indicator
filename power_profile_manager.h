@@ -9,7 +9,7 @@ public:
   PowerProfileManager();
 
   Glib::ustring get_profile();
-  int set_profile(Glib::ustring profile);
+  void set_profile(Glib::ustring profile);
 
 private:
   Glib::RefPtr<Gio::DBus::Proxy> m_proxy;

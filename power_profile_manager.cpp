@@ -26,6 +26,10 @@ Glib::ustring PowerProfileManager::get_profile() {
 
   auto params_container = Glib::VariantContainerBase::create_tuple(params);
   auto active_profile = this->m_proxy->call_sync("Get", params_container);
+  if (active_profile.get_type_string() != "(v)") {
+    std::cerr << "Dbus output is ambiguous!" << std::endl;
+    std::cerr << active_profile.print();
+  }
 
   Glib::VariantIter iterator1(active_profile);
   Glib::VariantContainerBase container1;
@@ -44,4 +48,25 @@ Glib::ustring PowerProfileManager::get_profile() {
   return profile.get();
 }
 
-int PowerProfileManager::set_profile(Glib::ustring profile) { return 0; }
+void PowerProfileManager::set_profile(Glib::ustring profile) {
+  std::vector<Glib::VariantBase> params;
+  params.push_back(Glib::Variant<Glib::ustring>::create(
+      "org.freedesktop.UPower.PowerProfiles"));
+  params.push_back(Glib::Variant<Glib::ustring>::create("ActiveProfile"));
+  params.push_back(Glib::Variant<Glib::Variant<Glib::ustring>>::create(
+      Glib::Variant<Glib::ustring>(
+          Glib::Variant<Glib::ustring>::create(profile))));
+
+  auto params_container = Glib::VariantContainerBase::create_tuple(params);
+  auto result = this->m_proxy->call_sync("Set", params_container);
+  if (result.get_type_string() != "()") {
+    std::cerr << "Failed tp update profile!" << std::endl;
+    std::cerr << result.print();
+  }
+
+  Glib::VariantIter iterator1(result);
+  if (iterator1.get_n_children() != 0) {
+    std::cerr << "Failed to update profile!" << std::endl;
+    std::cerr << result.print();
+  }
+}
