@@ -23,3 +23,5 @@ target_include_directories(
 
 target_link_directories(powermode-indicator PRIVATE ${GTK_LIBRARY_DIRS}
                         ${APP_INDICATOR_LIBRARIES})
+
+install(TARGETS powermode-indicator DESTINATION bin)
