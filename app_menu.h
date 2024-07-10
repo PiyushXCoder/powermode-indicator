@@ -1,6 +1,7 @@
-#ifndef APP_WINDOW_H
-#define APP_WINDOW_H
+#ifndef APP_MENU_H
+#define APP_MENU_H
 
+#include "power_profile_manager.h"
 #include <gtkmm/menu.h>
 #include <gtkmm/radiobuttongroup.h>
 #include <gtkmm/radiomenuitem.h>
@@ -14,13 +15,17 @@ public:
 private:
   AppIndicator *m_indicator;
 
-  Gtk::RadioButtonGroup group1;
+  Gtk::RadioButtonGroup m_group1;
 
   Gtk::RadioMenuItem m_performance_menu;
   Gtk::RadioMenuItem m_balanced_menu;
   Gtk::RadioMenuItem m_power_saver_menu;
 
-  static void update();
+  PowerProfileManager m_power_profile_manager;
+
+  Glib::ustring m_current_profile;
+
+  void update();
 };
 
-#endif // !APP_WINDOW_H
+#endif // !APP_MENU_H

@@ -1,6 +1,6 @@
 #include "app_menu.h"
-#include <glib-2.0/glib.h>
-#include <glibmm/refptr.h>
+#include <giomm.h>
+#include <glibmm.h>
 #include <gtkmm/application.h>
 #include <libappindicator/app-indicator.h>
 
@@ -18,8 +18,7 @@ int main(int argc, char *argv[]) {
 
   app_indicator_set_menu(indicator, app_menu.gobj());
 
-  GMainLoop *mainloop = g_main_loop_new(NULL, FALSE);
-  g_main_loop_run(mainloop);
-
+  Glib::RefPtr<Glib::MainLoop> loop = Glib::MainLoop::create();
+  loop->run();
   return 0;
 }

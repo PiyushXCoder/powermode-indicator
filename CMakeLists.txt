@@ -9,7 +9,8 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTK REQUIRED IMPORTED_TARGET gtkmm-3.0 glibmm-2.4 giomm-2.4)
 pkg_check_modules(APP_INDICATOR REQUIRED IMPORTED_TARGET appindicator3-0.1)
 
-add_executable(powermode-indicator main.cpp app_menu.cpp)
+add_executable(powermode-indicator main.cpp app_menu.cpp
+                                   power_profile_manager.cpp)
 
 target_link_libraries(powermode-indicator ${GTK_LIBRARIES}
                       ${APP_INDICATOR_LIBRARIES})
