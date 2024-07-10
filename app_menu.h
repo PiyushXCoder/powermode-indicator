@@ -17,9 +17,9 @@ private:
 
   Gtk::RadioButtonGroup m_group1;
 
-  Gtk::RadioMenuItem m_performance_menu;
-  Gtk::RadioMenuItem m_balanced_menu;
-  Gtk::RadioMenuItem m_power_saver_menu;
+  Gtk::RadioMenuItem m_performance_menu_item;
+  Gtk::RadioMenuItem m_balanced_menu_item;
+  Gtk::RadioMenuItem m_power_saver_menu_item;
 
   PowerProfileManager m_power_profile_manager;
 
