@@ -8,3 +8,9 @@ I do use it on my system. I would love to see contributions and bug reports.
 
 ![How many is shown](./screenshot.png)
 
+## Installation
+
+Arch Linux
+``` bash
+paru -S powermode-indicator-git
+```
