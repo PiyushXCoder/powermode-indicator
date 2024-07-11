@@ -18,6 +18,8 @@ PowerProfileManager::PowerProfileManager() {
       "org.freedesktop.DBus.Properties");
 }
 
+PowerProfileManager::~PowerProfileManager() {}
+
 Glib::ustring PowerProfileManager::get_profile() {
   std::vector<Glib::VariantBase> params;
   params.push_back(Glib::Variant<Glib::ustring>::create(

@@ -1,14 +1,15 @@
 #include "app_menu.h"
 #include <glibmm.h>
 #include <gtkmm.h>
-#include <iostream>
 
 void run() {}
 
-AppMenu::AppMenu(AppIndicator *indicator)
-    : m_indicator(indicator), m_performance_menu_item("Performance"),
-      m_balanced_menu_item("Balanced"), m_power_saver_menu_item("Power Saver"),
-      m_group1(), m_power_profile_manager(), m_current_profile("balanced") {
+AppMenu::AppMenu(std::shared_ptr<Indicator> indicator)
+    : m_performance_menu_item("Performance"), m_balanced_menu_item("Balanced"),
+      m_power_saver_menu_item("Power Saver"), m_group1(),
+      m_power_profile_manager(), m_current_profile("balanced") {
+
+  m_indicator = indicator;
 
   m_balanced_menu_item.set_group(m_group1);
   m_power_saver_menu_item.set_group(m_group1);
@@ -45,13 +46,13 @@ AppMenu::~AppMenu() {}
 
 void AppMenu::update() {
   if (this->m_current_profile == "balanced") {
-    app_indicator_set_icon(m_indicator, "speedometer");
+    m_indicator.get()->change_icon("speedometer");
     this->m_balanced_menu_item.set_active();
   } else if (this->m_current_profile == "power-saver") {
-    app_indicator_set_icon(m_indicator, "battery-profile-powersave");
+    m_indicator.get()->change_icon("battery-profile-powersave");
     this->m_power_saver_menu_item.set_active();
   } else if (this->m_current_profile == "performance") {
-    app_indicator_set_icon(m_indicator, "battery-profile-performance");
+    m_indicator.get()->change_icon("battery-profile-performance");
     this->m_performance_menu_item.set_active();
   }
 }

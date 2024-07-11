@@ -1,19 +1,20 @@
 #ifndef APP_MENU_H
 #define APP_MENU_H
 
+#include "indicator.h"
 #include "power_profile_manager.h"
 #include <gtkmm/menu.h>
 #include <gtkmm/radiobuttongroup.h>
 #include <gtkmm/radiomenuitem.h>
-#include <libappindicator/app-indicator.h>
+#include <memory>
 
 class AppMenu : public Gtk::Menu {
 public:
-  AppMenu(AppIndicator *indicator);
+  AppMenu(std::shared_ptr<Indicator> indicator);
   virtual ~AppMenu();
 
 private:
-  AppIndicator *m_indicator;
+  std::shared_ptr<Indicator> m_indicator;
 
   Gtk::RadioButtonGroup m_group1;
 

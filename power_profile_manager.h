@@ -8,6 +8,8 @@ class PowerProfileManager {
 public:
   PowerProfileManager();
 
+  ~PowerProfileManager();
+
   Glib::ustring get_profile();
   void set_profile(Glib::ustring profile);
 
