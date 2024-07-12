@@ -14,3 +14,10 @@ Arch Linux
 ``` bash
 paru -S powermode-indicator-git
 ```
+
+## How to run?
+
+The indicator shows up in Status Tray once `powermode-indicator` command is executed.
+
+I would recommend you to add it in autostart script.
+
