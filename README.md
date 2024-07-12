@@ -10,7 +10,7 @@ I do use it on my system. I would love to see contributions and bug reports.
 
 ## Installation
 
-Arch Linux
+### Arch Linux
 ``` bash
 paru -S powermode-indicator-git
 ```
