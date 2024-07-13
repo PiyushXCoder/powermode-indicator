@@ -61,5 +61,8 @@ I would recommend you to add it in autostart script.
 
 ## Troubleshoot
 
-* The indicator doesn't show performace mode or other mode if that is not available on your laptop
+* The indicator doesn't show performace mode or other mode if that is not available on your laptop. If you are not sure run the follwing command to check
+``` bash
+powerprofilesctl
+```
 * If icons are not shown. Try papirus-icon-theme, breeze-icons or any other complete icon pack
