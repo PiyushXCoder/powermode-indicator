@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(powermode-indicator VERSION 0.1)
+project(powermode-indicator VERSION 0.1.1)
 
 enable_language(CXX)
 set(CMAKE_CXX_STANDARD 17)
