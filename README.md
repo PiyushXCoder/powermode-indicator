@@ -21,3 +21,4 @@ The indicator shows up in Status Tray once `powermode-indicator` command is exec
 
 I would recommend you to add it in autostart script.
 
+> It doesn't show performace mode or other mode if that is not available on your laptop
