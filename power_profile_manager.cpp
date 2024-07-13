@@ -2,6 +2,13 @@
 
 #include <iostream>
 
+#define assert_ambiguous_output(condition, data, ret)                          \
+  if (condition) {                                                             \
+    std::cerr << "Dbus output is ambiguous!" << std::endl;                     \
+    std::cerr << data.print();                                                 \
+    return ret;                                                                \
+  }
+
 PowerProfileManager::PowerProfileManager() {
   Gio::init();
   Glib::RefPtr<Gio::DBus::Connection> connection =
@@ -25,28 +32,13 @@ Glib::ustring PowerProfileManager::get_profile() {
   params.push_back(Glib::Variant<Glib::ustring>::create(
       "org.freedesktop.UPower.PowerProfiles"));
   params.push_back(Glib::Variant<Glib::ustring>::create("ActiveProfile"));
-
   auto params_container = Glib::VariantContainerBase::create_tuple(params);
-  auto active_profile = this->m_proxy->call_sync("Get", params_container);
-  if (active_profile.get_type_string() != "(v)") {
-    std::cerr << "Dbus output is ambiguous!" << std::endl;
-    std::cerr << active_profile.print();
-  }
+  auto result = this->m_proxy->call_sync("Get", params_container);
 
-  Glib::VariantIter iterator1(active_profile);
-  Glib::VariantContainerBase container1;
-  if (!iterator1.next_value(container1)) {
-    std::cerr << "Dbus output is ambiguous!" << std::endl;
-    std::cerr << active_profile.print();
-  }
-
-  Glib::VariantIter iterator2(container1);
+  assert_ambiguous_output(result.get_type_string() != "(v)", result, "");
   Glib::Variant<Glib::ustring> profile;
-  if (!iterator2.next_value(profile)) {
-    std::cerr << "Dbus output is ambiguous!" << std::endl;
-    std::cerr << active_profile.print();
-  }
-
+  assert_ambiguous_output(
+      !Glib::VariantIter(result.get_child()).next_value(profile), result, "");
   return profile.get();
 }
 
@@ -58,17 +50,39 @@ void PowerProfileManager::set_profile(Glib::ustring profile) {
   params.push_back(Glib::Variant<Glib::Variant<Glib::ustring>>::create(
       Glib::Variant<Glib::ustring>(
           Glib::Variant<Glib::ustring>::create(profile))));
-
   auto params_container = Glib::VariantContainerBase::create_tuple(params);
   auto result = this->m_proxy->call_sync("Set", params_container);
-  if (result.get_type_string() != "()") {
-    std::cerr << "Failed tp update profile!" << std::endl;
-    std::cerr << result.print();
+  assert_ambiguous_output(result.get_type_string() != "()", result, );
+  assert_ambiguous_output(Glib::VariantIter(result).get_n_children() != 0,
+                          result, );
+}
+
+std::vector<Glib::ustring> PowerProfileManager::get_all() {
+  std::vector<Glib::ustring> profiles_available;
+
+  std::vector<Glib::VariantBase> params;
+  params.push_back(Glib::Variant<Glib::ustring>::create(
+      "org.freedesktop.UPower.PowerProfiles"));
+  auto params_container = Glib::VariantContainerBase::create_tuple(params);
+  auto result = this->m_proxy->call_sync("GetAll", params_container);
+
+  assert_ambiguous_output(result.get_type_string() != "(a{sv})", result,
+                          profiles_available);
+
+  Glib::Variant<std::map<Glib::ustring, Glib::VariantBase>> main_struct;
+  result.get_child(main_struct);
+  assert_ambiguous_output(main_struct.get().count("Profiles") != 1, result,
+                          profiles_available);
+
+  Glib::VariantIter profiles((main_struct.get())["Profiles"]);
+  Glib::Variant<std::map<Glib::ustring, Glib::VariantBase>> profile;
+  while (profiles.next_value(profile)) {
+    assert_ambiguous_output(profile.get().count("Profile") != 1, result,
+                            profiles_available);
+    auto prof = Glib::VariantBase::cast_dynamic<Glib::Variant<Glib::ustring>>(
+        (profile.get())["Profile"]);
+    profiles_available.push_back(prof.get());
   }
 
-  Glib::VariantIter iterator1(result);
-  if (iterator1.get_n_children() != 0) {
-    std::cerr << "Failed to update profile!" << std::endl;
-    std::cerr << result.print();
-  }
+  return profiles_available;
 }

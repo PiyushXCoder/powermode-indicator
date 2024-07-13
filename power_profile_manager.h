@@ -12,6 +12,7 @@ public:
 
   Glib::ustring get_profile();
   void set_profile(Glib::ustring profile);
+  std::vector<Glib::ustring> get_all();
 
 private:
   Glib::RefPtr<Gio::DBus::Proxy> m_proxy;
