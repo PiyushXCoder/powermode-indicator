@@ -1,0 +1,23 @@
+name: 'Build and Release' 
+
+on:
+  # push:
+  #   branches: 
+  #     - "master"
+  workflow_dispatch:
+
+jobs:
+      release:
+        name: 'Build Project'
+        runs-on: ubuntu-latest
+        steps:
+          - name: 'Checkout GitHub Action'
+            uses: actions/checkout@master
+          - name: 'CMake'
+            uses: threeal/cmake-action@v2.1.0
+            with:
+              generator: Ninja
+              cxx-compiler: clang++
+
+
+
