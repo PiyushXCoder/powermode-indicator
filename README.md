@@ -4,7 +4,10 @@ A system tray indicator for switching power profiles on Linux. Works on any desk
 
 > Requires [power-profiles-daemon](https://archlinux.org/packages/extra/x86_64/power-profiles-daemon/)
 
-![Screenshot](./screenshot.png)
+<center>
+	<img src="./assets/Screenshot.png" width="450">
+	<br/><i>Screenshot of Powermode Incicator in Xfce4</i>
+</center>
 
 ## Features
 
@@ -41,16 +44,16 @@ sudo rpm -i powermode-indicator_*.rpm
 
 **Dependencies:**
 
-| Package | Version |
-|---|---|
-| cmake | ≥ 3.16 |
-| gtkmm | 3.0 |
-| glibmm | 2.4 |
-| giomm | 2.4 |
-| appindicator3 | 0.1 |
-| glib2 (glib-compile-resources) | — |
-| gcc or clang | — |
-| pkg-config | — |
+| Package                        | Version |
+| ------------------------------ | ------- |
+| cmake                          | ≥ 3.16  |
+| gtkmm                          | 3.0     |
+| glibmm                         | 2.4     |
+| giomm                          | 2.4     |
+| appindicator3                  | 0.1     |
+| glib2 (glib-compile-resources) | —       |
+| gcc or clang                   | —       |
+| pkg-config                     | —       |
 
 **Steps:**
 
@@ -78,6 +81,7 @@ X-GNOME-Autostart-enabled=true
 
 **Profile mode missing from menu**
 Only profiles supported by your hardware are shown. Check available profiles:
+
 ```bash
 powerprofilesctl
 ```
