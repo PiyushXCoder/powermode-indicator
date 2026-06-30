@@ -28,3 +28,18 @@ target_link_directories(powermode-indicator PRIVATE ${GTK_LIBRARY_DIRS}
                         ${APP_INDICATOR_LIBRARIES})
 
 install(TARGETS powermode-indicator DESTINATION bin)
+
+set(CPACK_PACKAGE_NAME "powermode-indicator")
+set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
+set(CPACK_PACKAGE_CONTACT "Piyush Raj Mishra <piyush@datagenie.ai>")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "System tray power mode indicator for Linux")
+set(CPACK_PACKAGE_DESCRIPTION "A system tray indicator to switch between power profiles on Linux using power-profiles-daemon.")
+
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libgtkmm-3.0-1v5, libappindicator3-1")
+set(CPACK_DEBIAN_PACKAGE_SECTION "utils")
+set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
+
+set(CPACK_RPM_PACKAGE_REQUIRES "gtkmm30, libappindicator-gtk3")
+set(CPACK_RPM_PACKAGE_GROUP "Applications/System")
+
+include(CPack)

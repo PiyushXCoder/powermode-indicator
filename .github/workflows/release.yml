@@ -1,23 +1,102 @@
-name: 'Build and Release' 
+name: Build and Release
 
 on:
-  # push:
-  #   branches: 
-  #     - "master"
+  push:
+    tags:
+      - 'v*'
   workflow_dispatch:
 
 jobs:
-      release:
-        name: 'Build Project'
-        runs-on: ubuntu-latest
-        steps:
-          - name: 'Checkout GitHub Action'
-            uses: actions/checkout@master
-          - name: 'CMake'
-            uses: threeal/cmake-action@v2.1.0
-            with:
-              generator: Ninja
-              cxx-compiler: clang++
+  build-deb:
+    name: Build DEB + Binary
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            clang ninja-build cmake \
+            libgtkmm-3.0-dev \
+            libappindicator3-dev \
+            pkg-config
 
+      - name: Configure
+        run: cmake -B build -G Ninja -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Release
 
+      - name: Build
+        run: cmake --build build
+
+      - name: Package DEB
+        run: |
+          cd build
+          cpack -G DEB
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: powermode-indicator-bin
+          path: build/powermode-indicator
+
+      - name: Upload DEB
+        uses: actions/upload-artifact@v4
+        with:
+          name: powermode-indicator-deb
+          path: build/*.deb
+
+  build-rpm:
+    name: Build RPM
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          dnf install -y \
+            clang ninja-build cmake \
+            gtkmm30-devel \
+            libappindicator-gtk3-devel \
+            rpm-build \
+            pkg-config
+
+      - name: Configure
+        run: cmake -B build -G Ninja -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build
+
+      - name: Package RPM
+        run: |
+          cd build
+          cpack -G RPM
+
+      - name: Upload RPM
+        uses: actions/upload-artifact@v4
+        with:
+          name: powermode-indicator-rpm
+          path: build/*.rpm
+
+  release:
+    name: Create Release
+    needs: [build-deb, build-rpm]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: write
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/powermode-indicator
+            artifacts/*.deb
+            artifacts/*.rpm
+          generate_release_notes: true
