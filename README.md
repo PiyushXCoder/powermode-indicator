@@ -1,68 +1,90 @@
 # Powermode Indicator
 
-It is a plugin for all desktops supported by libappindicator. It provides menu to choose power profiles.
+A system tray indicator for switching power profiles on Linux. Works on any desktop supported by libappindicator.
 
-I do use it on my system. I would love to see contributions and bug reports. 
+> Requires [power-profiles-daemon](https://archlinux.org/packages/extra/x86_64/power-profiles-daemon/)
 
-> It depends on [power-profiles-daemon](https://archlinux.org/packages/extra/x86_64/power-profiles-daemon/)
+![Screenshot](./screenshot.png)
 
-![How many is shown](./screenshot.png)
+## Features
+
+- Switch between **Balanced**, **Power Saver**, and **Performance** profiles from the system tray
+- Instant profile change detection via D-Bus signals (no polling)
+- Tooltip showing the active profile name
+- Icons sourced from the system theme; Papirus icons bundled as fallback (dark/light variants auto-detected)
 
 ## Installation
 
 ### Arch Linux
-``` bash
+
+```bash
 paru -S powermode-indicator-git
 ```
 
-### Ubuntu and Debian
+### Ubuntu / Debian
 
-Deb file has been provided in release. You can download and install.
+Download the `.deb` from [Releases](../../releases) and install:
 
-### From sources
-
-> The packages is made using cmake
-
-#### You will need following dependencies:
-
-* cmake > 3.16
-* gtkmm-3.0
-* glibmm-2.4
-* giomm-2.4
-* appindicator3-0.1
-* gcc or clangd
-* pkg-config
-
-#### Steps:
-
-* Clone and change to the project directory
+```bash
+sudo dpkg -i powermode-indicator_*.deb
 ```
+
+### Fedora / RPM-based
+
+Download the `.rpm` from [Releases](../../releases) and install:
+
+```bash
+sudo rpm -i powermode-indicator_*.rpm
+```
+
+### Build from source
+
+**Dependencies:**
+
+| Package | Version |
+|---|---|
+| cmake | ≥ 3.16 |
+| gtkmm | 3.0 |
+| glibmm | 2.4 |
+| giomm | 2.4 |
+| appindicator3 | 0.1 |
+| glib2 (glib-compile-resources) | — |
+| gcc or clang | — |
+| pkg-config | — |
+
+**Steps:**
+
+```bash
+git clone https://github.com/PiyushXCoder/powermode-indicator
 cd powermode-indicator
-```
-* Make a build directory 
-``` bash
-mkdir build
-```
-* To build run following commands
-``` bash
-cmake -B build -S .
+cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
 cmake --build build
-```
-* To install run following commands
-``` bash
-cmake --install build
+sudo cmake --install build
 ```
 
-## How to run and configure?
+## Autostart
 
-The indicator shows up in Status Tray once `powermode-indicator` command is executed.
+To launch on login, create `~/.config/autostart/powermode-indicator.desktop`:
 
-I would recommend you to add it in autostart script.
+```ini
+[Desktop Entry]
+Type=Application
+Name=Powermode Indicator
+Exec=powermode-indicator
+X-GNOME-Autostart-enabled=true
+```
 
-## Troubleshoot
+## Troubleshooting
 
-* The indicator doesn't show performace mode or other mode if that is not available on your laptop. If you are not sure run the follwing command to check
-``` bash
+**Profile mode missing from menu**
+Only profiles supported by your hardware are shown. Check available profiles:
+```bash
 powerprofilesctl
 ```
-* If icons are not shown. Try papirus-icon-theme, breeze-icons or any other complete icon pack
+
+**Icons not showing**
+Icons are loaded from the active icon theme. If the theme lacks them, bundled Papirus icons are used automatically. If neither works, install [Papirus](https://github.com/PapirusDevelopmentGroup/papirus-icon-theme) or another complete icon theme.
+
+## Contributing
+
+Bug reports and pull requests are welcome.
