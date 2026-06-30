@@ -60,7 +60,7 @@ AppMenu::~AppMenu() {}
 
 void AppMenu::update() {
   if (this->m_current_profile == "balanced") {
-    m_indicator.get()->change_icon("battery-profile-balanced");
+    m_indicator.get()->change_icon("speedometer");
     this->m_balanced_menu_item.set_active();
   } else if (this->m_current_profile == "power-saver") {
     m_indicator.get()->change_icon("battery-profile-powersave");

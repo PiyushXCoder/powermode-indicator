@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/org/powermode-indicator/icons/hicolor/22x22/status">
+    <file alias="speedometer-dark.svg">assets/icons/hicolor/22x22/status/speedometer-dark.svg</file>
+    <file alias="speedometer-light.svg">assets/icons/hicolor/22x22/status/speedometer-light.svg</file>
     <file alias="battery-profile-balanced.svg">assets/icons/hicolor/22x22/status/battery-profile-balanced.svg</file>
     <file alias="battery-profile-powersave.svg">assets/icons/hicolor/22x22/status/battery-profile-powersave.svg</file>
+    <file alias="battery-profile-powersave-light.svg">assets/icons/hicolor/22x22/status/battery-profile-powersave-light.svg</file>
     <file alias="battery-profile-performance.svg">assets/icons/hicolor/22x22/status/battery-profile-performance.svg</file>
+    <file alias="battery-profile-performance-light.svg">assets/icons/hicolor/22x22/status/battery-profile-performance-light.svg</file>
   </gresource>
 </gresources>
