@@ -4,14 +4,6 @@
 
 void run() {}
 
-static std::string resolve_icon(const std::vector<std::string> &candidates) {
-  auto theme = Gtk::IconTheme::get_default();
-  for (const auto &name : candidates)
-    if (theme->has_icon(name))
-      return name;
-  return candidates.back();
-}
-
 AppMenu::AppMenu(std::shared_ptr<Indicator> indicator)
     : m_performance_menu_item("Performance"), m_balanced_menu_item("Balanced"),
       m_power_saver_menu_item("Power Saver"), m_group1(),
@@ -32,41 +24,49 @@ AppMenu::AppMenu(std::shared_ptr<Indicator> indicator)
   if (std::find(profiles_available.begin(), profiles_available.end(),
                 "performance") != profiles_available.end())
     add(m_performance_menu_item);
+
+  m_current_profile = m_power_profile_manager.get_profile();
   this->update();
 
-  Glib::signal_timeout().connect(
-      [this]() {
-        auto active_profile = this->m_power_profile_manager.get_profile();
-        if (this->m_current_profile != active_profile) {
-          this->m_current_profile = active_profile;
-          this->update();
-        }
-        return true;
-      },
-      1000);
+  m_power_profile_manager.connect_profile_changed([this](Glib::ustring profile) {
+    this->m_current_profile = profile;
+    this->update();
+  });
+
   show_all();
 
-  m_balanced_menu_item.signal_activate().connect(
-      [this]() { this->m_power_profile_manager.set_profile("balanced"); });
+  m_balanced_menu_item.signal_activate().connect([this]() {
+    if (!m_updating)
+      this->m_power_profile_manager.set_profile("balanced");
+  });
 
-  m_power_saver_menu_item.signal_activate().connect(
-      [this]() { this->m_power_profile_manager.set_profile("power-saver"); });
+  m_power_saver_menu_item.signal_activate().connect([this]() {
+    if (!m_updating)
+      this->m_power_profile_manager.set_profile("power-saver");
+  });
 
-  m_performance_menu_item.signal_activate().connect(
-      [this]() { this->m_power_profile_manager.set_profile("performance"); });
+  m_performance_menu_item.signal_activate().connect([this]() {
+    if (!m_updating)
+      this->m_power_profile_manager.set_profile("performance");
+  });
 }
 
 AppMenu::~AppMenu() {}
 
 void AppMenu::update() {
+  m_updating = true;
   if (this->m_current_profile == "balanced") {
-    m_indicator.get()->change_icon("speedometer");
+    m_indicator->change_icon("speedometer");
+    m_indicator->set_tooltip("Balanced");
     this->m_balanced_menu_item.set_active();
   } else if (this->m_current_profile == "power-saver") {
-    m_indicator.get()->change_icon("battery-profile-powersave");
+    m_indicator->change_icon("battery-profile-powersave");
+    m_indicator->set_tooltip("Power Saver");
     this->m_power_saver_menu_item.set_active();
   } else if (this->m_current_profile == "performance") {
-    m_indicator.get()->change_icon("battery-profile-performance");
+    m_indicator->change_icon("battery-profile-performance");
+    m_indicator->set_tooltip("Performance");
     this->m_performance_menu_item.set_active();
   }
+  m_updating = false;
 }

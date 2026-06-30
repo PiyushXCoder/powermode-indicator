@@ -14,6 +14,7 @@ public:
 
   void add_menu(Gtk::Menu &);
   void change_icon(std::string icon);
+  void set_tooltip(const std::string &text);
 
 private:
   std::unique_ptr<AppIndicator> m_app_indicator;

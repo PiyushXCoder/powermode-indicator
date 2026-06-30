@@ -25,6 +25,7 @@ private:
   PowerProfileManager m_power_profile_manager;
 
   Glib::ustring m_current_profile;
+  bool m_updating = false;
 
   void update();
 };

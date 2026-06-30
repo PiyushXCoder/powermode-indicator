@@ -11,21 +11,47 @@
 
 PowerProfileManager::PowerProfileManager() {
   Gio::init();
-  Glib::RefPtr<Gio::DBus::Connection> connection =
+  m_connection =
       Gio::DBus::Connection::get_sync(Gio::DBus::BusType::BUS_TYPE_SYSTEM);
 
-  if (!connection) {
+  if (!m_connection) {
     std::cerr << "System Bus not available" << std::endl;
     exit(1);
   }
 
   this->m_proxy = Gio::DBus::Proxy::create_sync(
-      connection, "org.freedesktop.UPower.PowerProfiles",
+      m_connection, "org.freedesktop.UPower.PowerProfiles",
       "/org/freedesktop/UPower/PowerProfiles",
       "org.freedesktop.DBus.Properties");
 }
 
-PowerProfileManager::~PowerProfileManager() {}
+PowerProfileManager::~PowerProfileManager() {
+  if (m_signal_id)
+    m_connection->signal_unsubscribe(m_signal_id);
+}
+
+void PowerProfileManager::connect_profile_changed(
+    std::function<void(Glib::ustring)> callback) {
+  m_signal_id = m_connection->signal_subscribe(
+      [callback](const Glib::RefPtr<Gio::DBus::Connection> &,
+                 const Glib::ustring &, const Glib::ustring &,
+                 const Glib::ustring &, const Glib::ustring &,
+                 const Glib::VariantContainerBase &params) {
+        if (params.get_n_children() < 2)
+          return;
+        Glib::Variant<std::map<Glib::ustring, Glib::VariantBase>> changed;
+        params.get_child(changed, 1);
+        auto map = changed.get();
+        if (!map.count("ActiveProfile"))
+          return;
+        auto val = Glib::VariantBase::cast_dynamic<Glib::Variant<Glib::ustring>>(
+            map.at("ActiveProfile"));
+        callback(val.get());
+      },
+      "org.freedesktop.UPower.PowerProfiles",
+      "org.freedesktop.DBus.Properties", "PropertiesChanged",
+      "/org/freedesktop/UPower/PowerProfiles");
+}
 
 Glib::ustring PowerProfileManager::get_profile() {
   std::vector<Glib::VariantBase> params;

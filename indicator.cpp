@@ -112,3 +112,7 @@ void Indicator::add_menu(Gtk::Menu &menu) {
 void Indicator::change_icon(std::string icon) {
   app_indicator_set_icon(m_app_indicator.get(), icon.c_str());
 }
+
+void Indicator::set_tooltip(const std::string &text) {
+  app_indicator_set_title(m_app_indicator.get(), text.c_str());
+}
