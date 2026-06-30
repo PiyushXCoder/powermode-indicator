@@ -17,6 +17,9 @@ public:
 
 private:
   std::unique_ptr<AppIndicator> m_app_indicator;
+  std::string m_icon_tmpdir;
+
+  std::string extract_icons_to_tmpdir();
 };
 
 #endif // !APP_INDICATOR_H

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/powermode-indicator/icons/hicolor/22x22/status">
+    <file alias="battery-profile-balanced.svg">assets/icons/hicolor/22x22/status/battery-profile-balanced.svg</file>
+    <file alias="battery-profile-powersave.svg">assets/icons/hicolor/22x22/status/battery-profile-powersave.svg</file>
+    <file alias="battery-profile-performance.svg">assets/icons/hicolor/22x22/status/battery-profile-performance.svg</file>
+  </gresource>
+</gresources>

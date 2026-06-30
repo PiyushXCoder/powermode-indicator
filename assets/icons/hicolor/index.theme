@@ -1,0 +1,9 @@
+[Icon Theme]
+Name=powermode-indicator
+Comment=Fallback icons for powermode-indicator
+Directories=22x22/status
+
+[22x22/status]
+Size=22
+Type=Fixed
+Context=Status

@@ -12,8 +12,25 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTK REQUIRED IMPORTED_TARGET gtkmm-3.0 glibmm-2.4 giomm-2.4)
 pkg_check_modules(APP_INDICATOR REQUIRED IMPORTED_TARGET appindicator3-0.1)
 
+find_program(GLIB_COMPILE_RESOURCES glib-compile-resources REQUIRED)
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/resources.c
+    COMMAND ${GLIB_COMPILE_RESOURCES}
+            --target=${CMAKE_CURRENT_BINARY_DIR}/resources.c
+            --sourcedir=${CMAKE_CURRENT_SOURCE_DIR}
+            --generate-source
+            ${CMAKE_CURRENT_SOURCE_DIR}/powermode-indicator.gresource.xml
+    DEPENDS
+        ${CMAKE_CURRENT_SOURCE_DIR}/powermode-indicator.gresource.xml
+        ${CMAKE_CURRENT_SOURCE_DIR}/assets/icons/hicolor/22x22/status/battery-profile-balanced.svg
+        ${CMAKE_CURRENT_SOURCE_DIR}/assets/icons/hicolor/22x22/status/battery-profile-powersave.svg
+        ${CMAKE_CURRENT_SOURCE_DIR}/assets/icons/hicolor/22x22/status/battery-profile-performance.svg
+    VERBATIM
+)
+
 add_executable(powermode-indicator main.cpp app_menu.cpp
-                                   power_profile_manager.cpp indicator.cpp)
+                                   power_profile_manager.cpp indicator.cpp
+                                   ${CMAKE_CURRENT_BINARY_DIR}/resources.c)
 
 target_link_libraries(powermode-indicator ${GTK_LIBRARIES}
                       ${APP_INDICATOR_LIBRARIES})
